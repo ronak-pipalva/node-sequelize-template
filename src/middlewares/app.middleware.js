@@ -3,12 +3,16 @@ import express from 'express';
 import router from '../routes/index.js';
 import errorHandler from '../utils/errorHandler.util.js';
 import apiLogger from './apiLogger.middleware.js';
+import limiter from './rateLimiter.middleware.js';
 
 const globalMiddleware = (app) => {
   // Middleware
   app.use(cors());
   app.use(express.json()); // Parse JSON bodies
   app.use(express.urlencoded({ extended: true }));
+
+  // Apply rate limit globally
+  app.use(limiter);
 
   // API logging
   app.use(apiLogger);
