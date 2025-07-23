@@ -7,3 +7,5 @@ error.log
 app.log
 logs/
 .DS_Store
+
+package-lock.json
