@@ -1,0 +1,48 @@
+export default {
+  GENERAL: {
+    SUCCESS: 'Success',
+    ERROR: 'Something went wrong',
+    NOT_FOUND: 'Resource not found',
+    BAD_REQUEST: 'Bad request',
+  },
+  AUTH: {
+    LOGIN_SUCCESS: 'Logged in successfully',
+    LOGIN_FAIL: 'Invalid email or password',
+    UNAUTHORIZED: 'Authentication required',
+    FORBIDDEN: 'Access denied',
+  },
+  USER: {
+    CREATED: 'User registered successfully',
+    UPDATED: 'User details updated successfully',
+    DELETED: 'User deleted successfully',
+    EXISTS: 'Email already in use',
+    NOT_FOUND: 'User not found',
+  },
+  CRUD: {
+    CREATED: 'Created successfully',
+    FETCHED: 'Data fetched successfully',
+    UPDATED: 'Updated successfully',
+    DELETED: 'Deleted successfully',
+    NOT_FOUND: 'No record found',
+  },
+  VALIDATION: {
+    REQUIRED: 'Missing required fields',
+    INVALID: 'Invalid input',
+    FORMAT: 'Invalid format',
+  },
+  DB: {
+    CONNECTED: 'Database connected successfully',
+    ERROR: 'Database connection failed',
+    DUPLICATE: 'Duplicate record',
+  },
+  COMMON: {
+    INVALID_MODEL: 'Invalid model',
+    VALIDATION_FAILED: 'Validation failed',
+    RECORD_CREATED: 'Record created',
+    RECORD_UPDATED: 'Record updated',
+    RECORD_DELETED: 'Record deleted',
+    RECORD_NOT_FOUND: 'Record not found',
+    RECORDS_FETCHED: 'Records fetched',
+    FILE_UPLOADED: 'File uploaded successfully',
+  },
+};
