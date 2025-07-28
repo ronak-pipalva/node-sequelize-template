@@ -3,6 +3,7 @@ import { sendSuccess } from '../utils/response.util.js';
 import messages from '../constants/messages.constants.js';
 import STATUS_CODE from '../constants/statusCode.constant.js';
 import { buildWhereClause } from '../utils/app.util.js';
+
 // Create One
 const createHandler = (model) => async (req, res, next) => {
   try {
@@ -14,10 +15,10 @@ const createHandler = (model) => async (req, res, next) => {
 };
 
 // Get One by Primary Key
-const getHandler = (model) => async (req, res, next) => {
+const getHandler = (model, queryOptions) => async (req, res, next) => {
   try {
     const id = req.params.id;
-    const record = await db_service.findOne(model, { id });
+    const record = await db_service.findOne(model, { id }, queryOptions);
     if (!record) throw new ApiError(404, `${model.name} not found`);
     return sendSuccess(res, record, messages.CRUD.FETCHED, STATUS_CODE.SUCCESS);
   } catch (err) {
@@ -66,45 +67,81 @@ const getAllHandler =
   };
 
 // Update by ID or query
-const updateHandler = (model) => async (req, res, next) => {
-  try {
-    const id = req.params.id;
-    const query = id
-      ? { [model.primaryKeyField]: id }
-      : req.query.filter
-        ? JSON.parse(req.query.filter)
-        : {};
+const updateHandler =
+  (model, uniqueFields = []) =>
+  async (req, res, next) => {
+    try {
+      const id = req.params.id;
 
-    if (!Object.keys(query).length) {
-      throw new ApiError(400, 'No valid query or ID provided for update');
+      if (!id) {
+        throw new ApiError(400, 'No valid ID provided for update');
+      }
+
+      const existingRecord = await model.findByPk(id);
+      if (!existingRecord) {
+        throw new ApiError(404, 'Record not found');
+      }
+
+      for (const field of uniqueFields) {
+        if (req.body[field]) {
+          const existing = await model.findOne({
+            where: {
+              [field]: req.body[field],
+              id: { [Op.ne]: id }, // Ignore current record
+            },
+          });
+
+          if (existing) {
+            throw new ApiError(
+              409,
+              `${field} must be unique. '${req.body[field]}' is already taken.`,
+            );
+          }
+        }
+      }
+      const result = await db_service.update(model, { id }, req.body);
+      return sendSuccess(res, result, messages.CRUD.UPDATED, STATUS_CODE.SUCCESS);
+    } catch (err) {
+      return next(err);
     }
-
-    const result = await db_service.update(model, query, req.body);
-    return sendSuccess(res, result, messages.CRUD.UPDATED, STATUS_CODE.SUCCESS);
-  } catch (err) {
-    next(err);
-  }
-};
+  };
 
 // Delete by ID or query
 const deleteHandler = (model) => async (req, res, next) => {
   try {
     const id = req.params.id;
-    const query = id
-      ? { [model.primaryKeyField]: id }
-      : req.query.filter
-        ? JSON.parse(req.query.filter)
-        : {};
-
-    if (!Object.keys(query).length) {
-      throw new ApiError(400, 'No valid query or ID provided for deletion');
+    if (!id) {
+      throw new ApiError(400, 'ID is required for deletion');
     }
 
-    const result = await db_service.destroy(model, query);
-    return sendSuccess(res, result, messages.CRUD.DELETED, STATUS_CODE.SUCCESS);
+    // Build primary key query
+    const query = { [model.primaryKeyAttribute]: id };
+
+    // Soft delete the main record
+    await db_service.update(model, query, { is_deleted: true });
+
+    // Loop through associations and soft delete child records
+    const associations = model.associations;
+
+    for (const assocKey in associations) {
+      const association = associations[assocKey];
+
+      if (['HasMany', 'HasOne'].includes(association.associationType)) {
+        const childModel = association.target;
+        const foreignKey = association.foreignKey;
+
+        // Skip if target model does not have `is_deleted` field
+        if (!childModel.rawAttributes?.is_deleted) continue;
+
+        const childQuery = { [foreignKey]: id };
+
+        await db_service.update(childModel, childQuery, { is_deleted: true });
+      }
+    }
+
+    return sendSuccess(res, {}, messages.CRUD.DELETED, STATUS_CODE.SUCCESS);
   } catch (err) {
     next(err);
   }
 };
-
 export { createHandler, getHandler, getAllHandler, updateHandler, deleteHandler };
