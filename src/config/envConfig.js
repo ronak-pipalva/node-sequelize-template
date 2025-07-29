@@ -31,7 +31,7 @@ const envVarsSchema = joi
     // AWS_BUCKET_NAME: joi.string().required().description('AWS S3 Bucket name'),
 
     // JWT
-    // JWT_SECRET_KEY: joi.string().required().description('JWT secret key'),
+    JWT_SECRET_KEY: joi.string().required().description('JWT secret key'),
     // ACCESS_EXPIRES_IN: joi.string().default('1h').description('Access token expiration'),
     // REFRESH_EXPIRES_IN: joi.string().default('30d').description('Refresh token expiration'),
 
@@ -63,11 +63,11 @@ const config = {
   DB_NAME: envVars.DB_NAME,
   DB_HOST: envVars.DB_HOST,
   DB_DIALECT: envVars.DB_DIALECT,
+  JWT_SECRET_KEY: envVars.JWT_SECRET_KEY,
   // AWS_ACCESS_KEY_ID: envVars.AWS_ACCESS_KEY_ID,
   // AWS_SECRET_ACCESS_KEY: envVars.AWS_SECRET_ACCESS_KEY,
   // AWS_REGION: envVars.AWS_REGION,
   // AWS_BUCKET_NAME: envVars.AWS_BUCKET_NAME,
-  // JWT_SECRET_KEY: envVars.JWT_SECRET_KEY,
   // ACCESS_EXPIRES_IN: envVars.ACCESS_EXPIRES_IN,
   // REFRESH_EXPIRES_IN: envVars.REFRESH_EXPIRES_IN,
   // AWS_MAIL_ACCESS_KEY_ID: envVars.AWS_MAIL_ACCESS_KEY_ID,

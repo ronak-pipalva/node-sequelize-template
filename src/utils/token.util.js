@@ -3,6 +3,7 @@ import appConstant from '../constants/app.constant.js';
 import Models from '../models/index.js';
 import jwt from 'jsonwebtoken';
 import ApiError from '../utils/apiError.util.js';
+import config from '../config/envConfig.js';
 const saveToken = async (token, user, expires, type) => {
   try {
     let user_id = user.id;
@@ -43,11 +44,11 @@ const generateAuthTokens = async (user) => {
   try {
     const access_token_expires = moment().add(appConstant.JWT.ACCESS_EXPIRES_IN, 'minutes');
 
-    const access_token = generateToken(user, access_token_expires, appConstant.JWT.ADMIN_SECRET);
+    const access_token = generateToken(user, access_token_expires, config.JWT_SECRET_KEY);
 
     const refresh_token_expires = moment().add(appConstant.JWT.REFRESH_EXPIRES_IN, 'days');
 
-    const refresh_token = generateToken(user, refresh_token_expires, appConstant.JWT.ADMIN_SECRET);
+    const refresh_token = generateToken(user, refresh_token_expires, config.JWT_SECRET_KEY);
 
     await saveToken(
       refresh_token,
@@ -108,7 +109,7 @@ const refreshToken = async (refresh_token) => {
 
     const access_token_expires = moment().add(appConstant.JWT.ACCESS_EXPIRES_IN, 'minutes');
 
-    token = generateToken(find_user, access_token_expires, appConstant.JWT.ADMIN_SECRET);
+    token = generateToken(find_user, access_token_expires, config.JWT_SECRET_KEY);
 
     return { access_token: token };
   } catch (error) {

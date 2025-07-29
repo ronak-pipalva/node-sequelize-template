@@ -10,6 +10,9 @@ export default {
     LOGIN_FAIL: 'Invalid email or password',
     UNAUTHORIZED: 'Authentication required',
     FORBIDDEN: 'Access denied',
+    TOKEN_REQUIRED: 'Authorization token is required.',
+    INVALID_TOKEN: 'Invalid or malformed token.',
+    TOKEN_EXPIRED: 'Token has expired.',
   },
   USER: {
     CREATED: 'User registered successfully',

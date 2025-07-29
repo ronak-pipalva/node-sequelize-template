@@ -1,5 +1,4 @@
 const JWT = {
-  ADMIN_SECRET: 'AdminSecret',
   ACCESS_EXPIRES_IN: 60,
   REFRESH_EXPIRES_IN: 365,
 };
