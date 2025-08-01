@@ -1,4 +1,4 @@
-const statusCode = {
+const STATUS_CODE = {
   SUCCESS: 200,
   CREATED: 201,
   NO_CONTENT: 204,
@@ -16,4 +16,4 @@ const statusCode = {
   SERVICE_UNAVAILABLE: 503,
 };
 
-export default statusCode;
+export default STATUS_CODE;
