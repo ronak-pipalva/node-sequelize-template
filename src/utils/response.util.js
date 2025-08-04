@@ -1,4 +1,4 @@
-import STATUS_CODE from '../constants/statusCode.constant.js';
+import { STATUS_CODE } from '../constants/index.js';
 
 const sendSuccess = (res, data = {}, message = 'Success', statusCode = STATUS_CODE.SUCCESS) => {
   return res.status(statusCode).json({

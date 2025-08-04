@@ -1,4 +1,34 @@
-export default {
+const JWT = {
+  ACCESS_EXPIRES_IN: 60,
+  REFRESH_EXPIRES_IN: 365,
+};
+
+const TOKEN_TYPES = {
+  ACCESS_TOKEN: 1,
+  REFRESH_TOKEN: 2,
+  FORGOT_PASSWORD: 3,
+  SET_PASSWORD: 4,
+};
+
+const STATUS_CODE = {
+  SUCCESS: 200,
+  CREATED: 201,
+  NO_CONTENT: 204,
+
+  BAD_REQUEST: 400,
+  UNAUTHORIZED: 401,
+  FORBIDDEN: 403,
+  NOT_FOUND: 404,
+  CONFLICT: 409,
+  UNPROCESSABLE_ENTITY: 422,
+
+  INTERNAL_SERVER_ERROR: 500,
+  NOT_IMPLEMENTED: 501,
+  BAD_GATEWAY: 502,
+  SERVICE_UNAVAILABLE: 503,
+};
+
+const MESSAGES = {
   GENERAL: {
     SUCCESS: 'Success',
     ERROR: 'Something went wrong',
@@ -49,3 +79,5 @@ export default {
     FILE_UPLOADED: 'File uploaded successfully',
   },
 };
+
+export { JWT, TOKEN_TYPES, MESSAGES, STATUS_CODE };

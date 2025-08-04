@@ -1,14 +1,13 @@
 import db_service from '../services/db.service.js';
 import { sendSuccess } from '../utils/response.util.js';
-import messages from '../constants/messages.constants.js';
-import STATUS_CODE from '../constants/statusCode.constant.js';
 import { buildWhereClause } from '../utils/app.util.js';
+import { MESSAGES, STATUS_CODE } from '../constants/index.js';
 
 // Create One
 const createHandler = (model) => async (req, res, next) => {
   try {
     const record = await db_service.createOne(model, req.body);
-    return sendSuccess(res, record, messages.CRUD.CREATED, STATUS_CODE.CREATED);
+    return sendSuccess(res, record, MESSAGES.CRUD.CREATED, STATUS_CODE.CREATED);
   } catch (err) {
     next(err);
   }
@@ -20,7 +19,7 @@ const getHandler = (model, queryOptions) => async (req, res, next) => {
     const id = req.params.id;
     const record = await db_service.findOne(model, { id }, queryOptions);
     if (!record) throw new ApiError(404, `${model.name} not found`);
-    return sendSuccess(res, record, messages.CRUD.FETCHED, STATUS_CODE.SUCCESS);
+    return sendSuccess(res, record, MESSAGES.CRUD.FETCHED, STATUS_CODE.SUCCESS);
   } catch (err) {
     next(err);
   }
@@ -60,7 +59,7 @@ const getAllHandler =
 
       const result = await db_service.findAndCountAll(model, where, options);
 
-      return sendSuccess(res, result, messages.CRUD.FETCHED, STATUS_CODE.SUCCESS);
+      return sendSuccess(res, result, MESSAGES.CRUD.FETCHED, STATUS_CODE.SUCCESS);
     } catch (err) {
       next(err);
     }
@@ -100,7 +99,7 @@ const updateHandler =
         }
       }
       const result = await db_service.update(model, { id }, req.body);
-      return sendSuccess(res, result, messages.CRUD.UPDATED, STATUS_CODE.SUCCESS);
+      return sendSuccess(res, result, MESSAGES.CRUD.UPDATED, STATUS_CODE.SUCCESS);
     } catch (err) {
       return next(err);
     }
@@ -139,7 +138,7 @@ const deleteHandler = (model) => async (req, res, next) => {
       }
     }
 
-    return sendSuccess(res, {}, messages.CRUD.DELETED, STATUS_CODE.SUCCESS);
+    return sendSuccess(res, {}, MESSAGES.CRUD.DELETED, STATUS_CODE.SUCCESS);
   } catch (err) {
     next(err);
   }

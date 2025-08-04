@@ -1,7 +1,7 @@
 import joi from 'joi';
 import dotenv from 'dotenv';
 import ApiError from '../utils/apiError.util.js';
-import statusCode from '../constants/statusCode.constant.js';
+import { STATUS_CODE } from '../constants/index.js';
 
 // Load environment file based on NODE_ENV
 dotenv.config({ path: `.env.${process.env.NODE_ENV || 'dev'}` });
@@ -51,7 +51,7 @@ const { value: envVars, error } = envVarsSchema
   .validate(process.env);
 
 if (error) {
-  throw new ApiError(statusCode.BAD_REQUEST, `Config validation error: ${error.message}`);
+  throw new ApiError(STATUS_CODE.BAD_REQUEST, `Config validation error: ${error.message}`);
 }
 
 // Export config object

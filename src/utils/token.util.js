@@ -1,9 +1,9 @@
 import moment from 'moment';
-import appConstant from '../constants/app.constant.js';
 import Models from '../models/index.js';
 import jwt from 'jsonwebtoken';
 import ApiError from '../utils/apiError.util.js';
 import config from '../config/envConfig.js';
+import { JWT, TOKEN_TYPES } from '../constants/index.js';
 const saveToken = async (token, user, expires, type) => {
   try {
     let user_id = user.id;
@@ -42,20 +42,15 @@ const generateToken = (user, expires, secret) => {
 
 const generateAuthTokens = async (user) => {
   try {
-    const access_token_expires = moment().add(appConstant.JWT.ACCESS_EXPIRES_IN, 'minutes');
+    const access_token_expires = moment().add(JWT.ACCESS_EXPIRES_IN, 'minutes');
 
     const access_token = generateToken(user, access_token_expires, config.JWT_SECRET_KEY);
 
-    const refresh_token_expires = moment().add(appConstant.JWT.REFRESH_EXPIRES_IN, 'days');
+    const refresh_token_expires = moment().add(JWT.REFRESH_EXPIRES_IN, 'days');
 
     const refresh_token = generateToken(user, refresh_token_expires, config.JWT_SECRET_KEY);
 
-    await saveToken(
-      refresh_token,
-      user,
-      refresh_token_expires,
-      appConstant.TOKEN_TYPES.REFRESH_TOKEN,
-    );
+    await saveToken(refresh_token, user, refresh_token_expires, TOKEN_TYPES.REFRESH_TOKEN);
 
     return {
       access_token: access_token,
@@ -89,7 +84,7 @@ const readToken = async (token, token_type) => {
 
 const refreshToken = async (refresh_token) => {
   try {
-    let token = await readToken(refresh_token, auth_const.TOKEN_TYPES.REFRESH);
+    let token = await readToken(refresh_token, TOKEN_TYPES.REFRESH);
 
     if (!token) {
       throw new ApiError(401, 'Invalid Token');
@@ -97,7 +92,7 @@ const refreshToken = async (refresh_token) => {
 
     let user_id = token.data.sub;
 
-    const find_user = await Models.user.findOne({
+    const find_user = await Models.User.findOne({
       where: {
         id: user_id,
       },
@@ -107,7 +102,7 @@ const refreshToken = async (refresh_token) => {
       throw new ApiError(401, 'User Not Found');
     }
 
-    const access_token_expires = moment().add(appConstant.JWT.ACCESS_EXPIRES_IN, 'minutes');
+    const access_token_expires = moment().add(JWT.ACCESS_EXPIRES_IN, 'minutes');
 
     token = generateToken(find_user, access_token_expires, config.JWT_SECRET_KEY);
 
